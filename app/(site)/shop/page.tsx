@@ -22,6 +22,7 @@ import {
 import { Icon } from "@iconify/react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import ShopSearch from "@/components/ShopSearch"
 
 const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
@@ -32,11 +33,11 @@ const instrumentSerif = Instrument_Serif({
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState("All")
   const listingRef = useRef<HTMLDivElement>(null)
+  const categoryFiltered = activeCategory === "All"
+    ? PRODUCTS
+    : PRODUCTS.filter((p) => p.category === activeCategory)
+  const [filteredProducts, setFilteredProducts] = useState(categoryFiltered)
 
-  const filteredProducts =
-    activeCategory === "All"
-      ? PRODUCTS
-      : PRODUCTS.filter((p) => p.category === activeCategory)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -92,11 +93,16 @@ export default function ShopPage() {
         </div>
       </section>
 
+
       <div className="pt-8">
         <ProductCategory
           activeCategory={activeCategory}
           onCategoryChange={setActiveCategory}
         />
+      </div>
+
+      <div className="mx-auto flex max-w-7xl flex-col gap-8 px-15 md:px-20 lg:px-40">
+        <ShopSearch activeCategory={activeCategory} filteredProducts={filteredProducts} setFilteredProducts={setFilteredProducts} />
       </div>
       <div ref={listingRef} className="scroll-mt-24">
         <ProductListing
@@ -113,6 +119,7 @@ export default function ShopPage() {
           }
         />
       </div>
+
       {/* Bespoke Style Guide Section */}
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-16">
         <div className="grid items-center gap-16 overflow-hidden rounded-3xl bg-muted/30 lg:grid-cols-2">
@@ -223,6 +230,6 @@ export default function ShopPage() {
           </div>
         </div>
       </section>
-    </main>
+    </main >
   )
 }
